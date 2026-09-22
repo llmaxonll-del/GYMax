@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Подход — журнал тренировок</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #15140F;
+  --surface: #1E1C16;
+  --surface-2: #262319;
+  --line: #38352A;
+  --ink: #EDE7D9;
+  --ink-dim: #9C9584;
+  --iron: #8FA3A8;
+  --brass: #C9A24B;
+  --up: #8FA35B;
+  --down: #B25B45;
+  --radius: 3px;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: #F2EEE3; --surface: #FFFFFF; --surface-2: #E9E3D2; --line: #D8D0BA;
+    --ink: #201E17; --ink-dim: #6B6555; --iron: #4B6167; --brass: #93701F;
+    --up: #5E7A34; --down: #92402C;
+  }
+}
+:root[data-theme="light"]{
+  --bg: #F2EEE3; --surface: #FFFFFF; --surface-2: #E9E3D2; --line: #D8D0BA;
+  --ink: #201E17; --ink-dim: #6B6555; --iron: #4B6167; --brass: #93701F;
+  --up: #5E7A34; --down: #92402C;
+}
+*{box-sizing:border-box;}
+html{scroll-padding-top: env(safe-area-inset-top, 0px);}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,sans-serif;min-height:100%;line-height:1.5;}
+h1,h2,h3,.num{font-family:'Space Grotesk',sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 80px;}
+
+header.top{display:flex;align-items:baseline;justify-content:space-between;padding:18px 0 22px;border-bottom:1px solid var(--line);margin-bottom:22px;}
+header.top .brand{display:flex;align-items:baseline;gap:10px;}
+header.top h1{font-size:22px;font-weight:700;margin:0;letter-spacing:0.01em;}
+header.top .sub{color:var(--ink-dim);font-size:13px;}
+.theme-btn{background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:var(--radius);padding:6px 10px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
+.theme-btn:hover{border-color:var(--iron);color:var(--ink);}
+.sync-badge{font-size:11px;color:var(--ink-dim);border:1px solid var(--line);border-radius:var(--radius);padding:5px 9px;}
+.sync-badge.on{color:var(--up);border-color:var(--up);}
+
+.layout{display:grid;grid-template-columns:1fr 1.35fr;gap:20px;align-items:start;}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+.card h2{margin:0 0 14px;font-size:16px;}
+
+.cat-block{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;}
+.cat-block:first-child{border-top:none;margin-top:0;padding-top:0;}
+.cat-block h3{margin:0 0 8px;font-size:12px;color:var(--brass);letter-spacing:.03em;font-weight:600;}
+.ex-row{display:flex;align-items:center;gap:8px;padding:6px 0;}
+.ex-row .nm{flex:1;font-size:13px;}
+.ex-row .wt-input{width:64px;text-align:right;}
+.ex-row .unit{font-size:12px;color:var(--ink-dim);}
+.ex-row .rm{background:none;border:none;color:var(--ink-dim);cursor:pointer;font-size:14px;padding:2px 4px;}
+.ex-row .rm:hover{color:var(--down);}
+.add-ex-row{display:flex;gap:6px;margin-top:8px;}
+.add-ex-row input{flex:1;}
+.add-ex-row button{white-space:nowrap;}
+
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.stat{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;flex:1;min-width:130px;}
+.stat .lbl{font-size:11px;color:var(--ink-dim);margin-bottom:4px;}
+.stat .val{font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+.stat .delta{font-size:12px;margin-top:2px;}
+
+.cat-vol{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.cat-vol-row{display:flex;align-items:center;gap:8px;font-size:12px;}
+.cat-vol-row .cname{width:80px;color:var(--ink-dim);flex-shrink:0;}
+.cat-vol-row .bar-wrap{flex:1;background:var(--surface-2);border-radius:2px;height:8px;overflow:hidden;}
+.cat-vol-row .bar{height:100%;background:var(--iron);}
+.cat-vol-row .cval{width:70px;text-align:right;flex-shrink:0;color:var(--ink-dim);}
+
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;overflow-x:auto;}
+@media (max-width:1100px){.day-grid{grid-template-columns:repeat(4,minmax(140px,1fr));}}
+@media (max-width:560px){.day-grid{grid-template-columns:1fr;}}
+.day-col{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px;min-height:70px;}
+.day-col h3{margin:0 0 10px;font-size:13px;color:var(--ink-dim);font-weight:600;letter-spacing:.02em;}
+
+.ex-chip{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:7px;position:relative;overflow:hidden;}
+.ex-chip .head{padding:8px 26px 8px 9px;cursor:pointer;font-size:13px;}
+.ex-chip .head .nm{font-weight:600;display:block;margin-bottom:2px;}
+.ex-chip .head .meta{color:var(--ink-dim);font-size:11px;}
+.ex-chip .head .meta.trend-up{color:var(--up);}
+.ex-chip .head .meta.trend-down{color:var(--down);}
+.ex-chip .rm{position:absolute;top:6px;right:6px;background:none;border:none;color:var(--ink-dim);cursor:pointer;font-size:14px;line-height:1;padding:2px;}
+.ex-chip .rm:hover{color:var(--down);}
+.log-form{display:none;padding:8px 9px 10px;border-top:1px solid var(--line);background:var(--surface-2);}
+.log-form.open{display:block;}
+.log-form .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;}
+.log-form label{font-size:10px;color:var(--ink-dim);display:block;margin-bottom:2px;}
+.log-form input{font-size:12px;padding:6px 7px;}
+.log-form .save-btn{width:100%;font-size:12px;padding:7px;}
+.add-to-day{width:100%;margin-top:4px;font-size:12px;}
+
+select,input[type=number],input[type=text],input[type=date]{
+  background:var(--surface-2);border:1px solid var(--line);color:var(--ink);
+  border-radius:var(--radius);padding:8px 9px;font-size:13px;font-family:'Inter',sans-serif;width:100%;
+}
+select:focus,input:focus{outline:2px solid var(--iron);outline-offset:1px;}
+button.primary{background:var(--brass);color:var(--bg);border:none;border-radius:var(--radius);padding:9px 16px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
+button.primary:hover{filter:brightness(1.08);}
+.empty{color:var(--ink-dim);font-size:12px;padding:10px 0;}
+footer{margin-top:30px;text-align:center;color:var(--ink-dim);font-size:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <h1>Подход</h1>
+    <span class="sub">журнал тренировок</span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <span class="sync-badge" id="syncBadge">локально</span>
+    <button class="theme-btn" id="themeToggle">Тема</button>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="card" id="libraryCard">
+    <h2>Упражнения по группам мышц</h2>
+    <div id="catList"></div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Программа на неделю</h2>
+      <div class="stat-row" id="weekStats"></div>
+      <div class="cat-vol" id="catVolBreakdown"></div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+  </div>
+</div>
+
+<footer>Данные хранятся в облаке Telegram (или локально в браузере, если открыто не в Telegram).</footer>
+</div>
+
+<script>
+const DAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const CATEGORIES = ["Грудь","Спина","Ноги","Плечи","Бицепс","Трицепс","Предплечья","Трапеция","Шея","Пресс","Икры"];
+
+/* ---------- Telegram integration ---------- */
+function tg(){ return (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null; }
+function isTelegramCloud(){ const t = tg(); return !!(t && t.CloudStorage); }
+
+function applyTelegramTheme(){
+  const t = tg();
+  if(!t) return;
+  const tp = t.themeParams || {};
+  const root = document.documentElement;
+  if(tp.bg_color) root.style.setProperty('--bg', tp.bg_color);
+  if(tp.secondary_bg_color) root.style.setProperty('--surface-2', tp.secondary_bg_color);
+  if(tp.bg_color) root.style.setProperty('--surface', tp.bg_color);
+  if(tp.text_color) root.style.setProperty('--ink', tp.text_color);
+  if(tp.hint_color) root.style.setProperty('--ink-dim', tp.hint_color);
+  if(tp.button_color) root.style.setProperty('--brass', tp.button_color);
+  if(tp.link_color) root.style.setProperty('--iron', tp.link_color);
+  try{ t.setHeaderColor && t.setHeaderColor(tp.bg_color || '#15140F'); }catch(e){}
+  try{ t.setBackgroundColor && t.setBackgroundColor(tp.bg_color || '#15140F'); }catch(e){}
+}
+
+function initTelegram(){
+  const t = tg();
+  if(!t) return;
+  try{
+    t.ready();
+    t.expand();
+    applyTelegramTheme();
+    t.onEvent && t.onEvent('themeChanged', applyTelegramTheme);
+  }catch(e){ console.error("telegram init failed", e); }
+  document.getElementById("themeToggle").style.display = "none";
+  const badge = document.getElementById("syncBadge");
+  if(isTelegramCloud()){ badge.textContent = "облако Telegram"; badge.classList.add("on"); }
+}
+
+/* ---------- Storage layer: Telegram CloudStorage with localStorage fallback ---------- */
+const META_KEY = "podhod_meta";
+const CHUNK_PREFIX = "podhod_c_";
+const CHUNK_SIZE = 3500;
+
+function cloudGetItem(key){
+  return new Promise(resolve=>{
+    if(isTelegramCloud()){
+      tg().CloudStorage.getItem(key, (err, value)=>{ resolve(err ? null : (value || null)); });
+    } else {
+      try{ resolve(localStorage.getItem(key)); }catch(e){ resolve(null); }
+    }
+  });
+}
+function cloudSetItem(key, value){
+  return new Promise(resolve=>{
+    if(isTelegramCloud()){
+      tg().CloudStorage.setItem(key, value, (err, ok)=>{ resolve(!err); });
+    } else {
+      try{ localStorage.setItem(key, value); resolve(true); }catch(e){ resolve(false); }
+    }
+  });
+}
+function cloudRemoveItems(keys){
+  return new Promise(resolve=>{
+    if(!keys.length){ resolve(true); return; }
+    if(isTelegramCloud()){
+      tg().CloudStorage.removeItems(keys, (err, ok)=>{ resolve(!err); });
+    } else {
+      try{ keys.forEach(k=>localStorage.removeItem(k)); resolve(true); }catch(e){ resolve(false); }
+    }
+  });
+}
+
+async function loadDataAsync(){
+  try{
+    const metaRaw = await cloudGetItem(META_KEY);
+    if(!metaRaw) return defaultData();
+    const meta = JSON.parse(metaRaw);
+    const count = meta.count || 0;
+    if(!count) return defaultData();
+    let full = "";
+    for(let i=0;i<count;i++){
+      full += (await cloudGetItem(CHUNK_PREFIX+i)) || "";
+    }
+    return JSON.parse(full);
+  }catch(e){
+    console.error("load failed", e);
+    return defaultData();
+  }
+}
+
+let saveInFlight = false, saveQueued = false;
+async function saveDataAsync(){
+  if(saveInFlight){ saveQueued = true; return; }
+  saveInFlight = true;
+  try{
+    const json = JSON.stringify(data);
+    const chunks = [];
+    for(let i=0;i<json.length;i+=CHUNK_SIZE){ chunks.push(json.slice(i,i+CHUNK_SIZE)); }
+    if(!chunks.length) chunks.push("");
+    const metaRaw = await cloudGetItem(META_KEY);
+    const oldCount = metaRaw ? (JSON.parse(metaRaw).count||0) : 0;
+    for(let i=0;i<chunks.length;i++){ await cloudSetItem(CHUNK_PREFIX+i, chunks[i]); }
+    if(oldCount > chunks.length){
+      const toRemove = [];
+      for(let i=chunks.length;i<oldCount;i++) toRemove.push(CHUNK_PREFIX+i);
+      await cloudRemoveItems(toRemove);
+    }
+    await cloudSetItem(META_KEY, JSON.stringify({count: chunks.length}));
+  }catch(e){
+    console.error("save failed", e);
+  }
+  saveInFlight = false;
+  if(saveQueued){ saveQueued = false; saveDataAsync(); }
+}
+function saveData(){ saveDataAsync(); }
+
+function defaultData(){
+  const ex = {
+    "ex1":{name:"Жим лёжа",category:"Грудь",refWeight:60},
+    "ex2":{name:"Становая тяга",category:"Спина",refWeight:80},
+    "ex3":{name:"Подтягивания",category:"Спина",refWeight:0},
+    "ex4":{name:"Приседания",category:"Ноги",refWeight:70},
+    "ex5":{name:"Жим стоя",category:"Плечи",refWeight:35},
+    "ex6":{name:"Подъём штанги на бицепс",category:"Бицепс",refWeight:25},
+    "ex7":{name:"Французский жим",category:"Трицепс",refWeight:20},
+    "ex8":{name:"Шраги",category:"Трапеция",refWeight:40},
+    "ex9":{name:"Подъёмы на носки",category:"Икры",refWeight:50}
+  };
+  return {
+    exercises: ex,
+    program: { "Пн":["ex1","ex2"], "Вт":[], "Ср":["ex4"], "Чт":[], "Пт":["ex1","ex2"], "Сб":[], "Вс":[] },
+    logs: []
+  };
+}
+
+let data = defaultData();
+let nextExId = 1;
+let openChip = null;
+
+function recalcNextExId(){
+  const ids = Object.keys(data.exercises);
+  nextExId = ids.length ? Math.max(...ids.map(k=>parseInt(k.replace("ex",""))||0)) + 1 : 1;
+}
+function uid(){ return "ex" + (nextExId++); }
+function logUid(){ return "log" + Date.now() + Math.floor(Math.random()*1000); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+/* ---------- Theme toggle (browser fallback only) ---------- */
+document.getElementById("themeToggle").addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+});
+
+/* ---------- Left: exercise library ---------- */
+function renderCatList(){
+  const wrap = document.getElementById("catList");
+  wrap.innerHTML = "";
+  CATEGORIES.forEach(cat=>{
+    const ids = Object.keys(data.exercises).filter(id=>data.exercises[id].category===cat);
+    const block = document.createElement("div");
+    block.className = "cat-block";
+    block.innerHTML = `<h3>${cat}</h3>`;
+    const list = document.createElement("div");
+    if(!ids.length){
+      list.innerHTML = '<div class="empty">пока нет упражнений</div>';
+    } else {
+      ids.forEach(id=>{
+        const ex = data.exercises[id];
+        const row = document.createElement("div");
+        row.className = "ex-row";
+        row.innerHTML = `
+          <span class="nm">${ex.name}</span>
+          <input type="number" step="0.5" class="wt-input" value="${ex.refWeight ?? 0}">
+          <span class="unit">кг×8</span>
+        `;
+        const wtInput = row.querySelector(".wt-input");
+        wtInput.addEventListener("change", ()=>{
+          ex.refWeight = parseFloat(wtInput.value) || 0;
+          saveData();
+          renderDayGrid();
+        });
+        const rm = document.createElement("button");
+        rm.className = "rm"; rm.textContent = "×"; rm.title = "Удалить упражнение";
+        rm.addEventListener("click", ()=>{
+          if(!confirm(`Удалить «${ex.name}» из библиотеки и из плана?`)) return;
+          delete data.exercises[id];
+          Object.keys(data.program).forEach(d=>{ data.program[d] = data.program[d].filter(x=>x!==id); });
+          saveData();
+          renderCatList();
+          renderDayGrid();
+        });
+        row.appendChild(rm);
+        list.appendChild(row);
+      });
+    }
+    block.appendChild(list);
+
+    const addRow = document.createElement("div");
+    addRow.className = "add-ex-row";
+    addRow.innerHTML = `<input type="text" placeholder="Новое упражнение">`;
+    const addBtn = document.createElement("button");
+    addBtn.className = "primary"; addBtn.textContent = "+";
+    const nameInput = addRow.querySelector("input");
+    addBtn.addEventListener("click", ()=>{
+      const name = nameInput.value.trim();
+      if(!name) return;
+      const id = uid();
+      data.exercises[id] = {name, category:cat, refWeight:0};
+      saveData();
+      renderCatList();
+      renderDayGrid();
+    });
+    nameInput.addEventListener("keydown", e=>{ if(e.key==="Enter") addBtn.click(); });
+    addRow.appendChild(addBtn);
+    block.appendChild(addRow);
+
+    wrap.appendChild(block);
+  });
+}
+
+/* ---------- Right: program + logging ---------- */
+function volume(entry){ return (entry.weight||0)*(entry.reps||0)*(entry.sets||0); }
+
+function weekBounds(dateStr){
+  const d = new Date(dateStr+"T00:00:00");
+  const jsDay = d.getDay();
+  const offsetToMonday = (jsDay+6)%7;
+  const monday = new Date(d); monday.setDate(d.getDate()-offsetToMonday);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+  const fmt = x=>x.toISOString().slice(0,10);
+  return {start: fmt(monday), end: fmt(sunday)};
+}
+function sumVolumeInRange(start,end){
+  return data.logs.filter(l=>l.date>=start && l.date<=end).reduce((s,l)=>s+volume(l),0);
+}
+function lastTwoLogs(exId){
+  return data.logs.filter(l=>l.exerciseId===exId).sort((a,b)=> a.date<b.date?1:-1).slice(0,2);
+}
+
+function renderWeekStats(){
+  const today = todayISO();
+  const thisWeek = weekBounds(today);
+  const lw = new Date(thisWeek.start+"T00:00:00"); lw.setDate(lw.getDate()-7);
+  const lastWeek = weekBounds(lw.toISOString().slice(0,10));
+  const curVol = sumVolumeInRange(thisWeek.start, thisWeek.end);
+  const prevVol = sumVolumeInRange(lastWeek.start, lastWeek.end);
+  const delta = prevVol ? (((curVol-prevVol)/prevVol)*100) : null;
+
+  document.getElementById("weekStats").innerHTML = `
+    <div class="stat">
+      <div class="lbl">Объём этой недели</div>
+      <div class="val">${curVol.toLocaleString("ru-RU")} кг</div>
+      <div class="delta" style="color:${delta===null?'var(--ink-dim)':(delta>=0?'var(--up)':'var(--down)')}">
+        ${delta===null ? "нет данных за прошлую неделю" : (delta>=0?"+":"")+delta.toFixed(1)+"% к прошлой неделе"}
+      </div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Прошлая неделя</div>
+      <div class="val">${prevVol.toLocaleString("ru-RU")} кг</div>
+    </div>
+  `;
+
+  const byCat = {};
+  data.logs.filter(l=>l.date>=thisWeek.start && l.date<=thisWeek.end).forEach(l=>{
+    const ex = data.exercises[l.exerciseId];
+    if(!ex) return;
+    byCat[ex.category] = (byCat[ex.category]||0) + volume(l);
+  });
+  const maxCat = Math.max(1, ...Object.values(byCat));
+  const catWrap = document.getElementById("catVolBreakdown");
+  const activeCats = CATEGORIES.filter(c=>byCat[c]);
+  if(!activeCats.length){
+    catWrap.innerHTML = '<div class="empty">За эту неделю пока нет записей — объём по группам появится после первой тренировки</div>';
+  } else {
+    catWrap.innerHTML = activeCats.map(c=>`
+      <div class="cat-vol-row">
+        <span class="cname">${c}</span>
+        <span class="bar-wrap"><span class="bar" style="width:${(byCat[c]/maxCat*100).toFixed(0)}%"></span></span>
+        <span class="cval">${byCat[c].toLocaleString("ru-RU")} кг</span>
+      </div>
+    `).join("");
+  }
+}
+
+function renderDayGrid(){
+  const grid = document.getElementById("dayGrid");
+  grid.innerHTML = "";
+  DAYS.forEach(day=>{
+    const col = document.createElement("div");
+    col.className = "day-col";
+    col.innerHTML = `<h3>${day}</h3>`;
+
+    (data.program[day] || []).forEach(exId=>{
+      const ex = data.exercises[exId];
+      if(!ex) return;
+      const chipKey = day+"__"+exId;
+      const [last, prev] = lastTwoLogs(exId);
+      let trendClass = "", trendText = "нет записей";
+      if(last){
+        trendText = `${last.date}: ${last.weight} кг × ${last.reps} × ${last.sets}`;
+        if(prev){
+          const lv = volume(last), pv = volume(prev);
+          if(lv>pv){ trendClass="trend-up"; trendText += " ↑"; }
+          else if(lv<pv){ trendClass="trend-down"; trendText += " ↓"; }
+        }
+      }
+
+      const chip = document.createElement("div");
+      chip.className = "ex-chip";
+      chip.innerHTML = `
+        <div class="head">
+          <span class="nm">${ex.name}</span>
+          <span class="meta ${trendClass}">${trendText}</span>
+        </div>
+        <div class="log-form ${openChip===chipKey?'open':''}">
+          <div class="row3">
+            <div><label>Дата</label><input type="date" class="lf-date" value="${todayISO()}"></div>
+            <div><label>Вес,кг</label><input type="number" step="0.5" class="lf-weight" value="${last?last.weight:ex.refWeight||0}"></div>
+            <div><label>Повт</label><input type="number" class="lf-reps" value="${last?last.reps:8}"></div>
+          </div>
+          <div class="row3" style="grid-template-columns:1fr;">
+            <div><label>Подходы</label><input type="number" class="lf-sets" value="${last?last.sets:3}"></div>
+          </div>
+          <button class="primary save-btn">Сохранить подход</button>
+        </div>
+      `;
+      const rm = document.createElement("button");
+      rm.className = "rm"; rm.textContent = "×"; rm.title = "Убрать из дня";
+      rm.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        data.program[day] = data.program[day].filter(x=>x!==exId);
+        saveData(); renderDayGrid();
+      });
+      chip.appendChild(rm);
+
+      const head = chip.querySelector(".head");
+      head.addEventListener("click", ()=>{
+        openChip = (openChip===chipKey) ? null : chipKey;
+        renderDayGrid();
+      });
+
+      const saveBtn = chip.querySelector(".save-btn");
+      saveBtn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const dateV = chip.querySelector(".lf-date").value || todayISO();
+        const weightV = parseFloat(chip.querySelector(".lf-weight").value) || 0;
+        const repsV = parseInt(chip.querySelector(".lf-reps").value) || 0;
+        const setsV = parseInt(chip.querySelector(".lf-sets").value) || 0;
+        data.logs.push({id: logUid(), exerciseId: exId, date: dateV, weight: weightV, reps: repsV, sets: setsV});
+        saveData();
+        openChip = null;
+        renderDayGrid();
+        renderWeekStats();
+      });
+
+      col.appendChild(chip);
+    });
+
+    const availableIds = Object.keys(data.exercises).filter(id=>!(data.program[day]||[]).includes(id));
+    if(availableIds.length){
+      const sel = document.createElement("select");
+      sel.className = "add-to-day";
+      sel.innerHTML = '<option value="">+ добавить упражнение</option>' +
+        CATEGORIES.map(cat=>{
+          const opts = availableIds.filter(id=>data.exercises[id].category===cat)
+            .map(id=>`<option value="${id}">${data.exercises[id].name}</option>`).join("");
+          return opts ? `<optgroup label="${cat}">${opts}</optgroup>` : "";
+        }).join("");
+      sel.addEventListener("change", ()=>{
+        if(!sel.value) return;
+        data.program[day] = data.program[day] || [];
+        data.program[day].push(sel.value);
+        saveData(); renderDayGrid();
+      });
+      col.appendChild(sel);
+    }
+
+    grid.appendChild(col);
+  });
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  initTelegram();
+  data = await loadDataAsync();
+  recalcNextExId();
+  renderCatList();
+  renderDayGrid();
+  renderWeekStats();
+}
+init();
+</script>
+</body>
+</html>
