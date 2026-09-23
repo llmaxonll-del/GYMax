@@ -10,535 +10,457 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg: #15140F;
-  --surface: #1E1C16;
-  --surface-2: #262319;
-  --line: #38352A;
-  --ink: #EDE7D9;
-  --ink-dim: #9C9584;
-  --iron: #8FA3A8;
-  --brass: #C9A24B;
-  --up: #8FA35B;
-  --down: #B25B45;
-  --radius: 3px;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg:#15140F;--surface:#1E1C16;--surface-2:#262319;--line:#3A362A;
+  --ink:#EDE7D9;--ink-dim:#A39C8A;--iron:#8FA3A8;--brass:#C9A24B;--up:#8FA35B;--down:#B25B45;
+  --radius:8px; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    --bg: #F2EEE3; --surface: #FFFFFF; --surface-2: #E9E3D2; --line: #D8D0BA;
-    --ink: #201E17; --ink-dim: #6B6555; --iron: #4B6167; --brass: #93701F;
-    --up: #5E7A34; --down: #92402C;
-  }
-}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#F2EEE3;--surface:#FFFFFF;--surface-2:#EDE7D5;--line:#D8D0BA;
+  --ink:#201E17;--ink-dim:#6B6555;--iron:#4B6167;--brass:#93701F;--up:#5E7A34;--down:#92402C;}}
 :root[data-theme="light"]{
-  --bg: #F2EEE3; --surface: #FFFFFF; --surface-2: #E9E3D2; --line: #D8D0BA;
-  --ink: #201E17; --ink-dim: #6B6555; --iron: #4B6167; --brass: #93701F;
-  --up: #5E7A34; --down: #92402C;
-}
+  --bg:#F2EEE3;--surface:#FFFFFF;--surface-2:#EDE7D5;--line:#D8D0BA;
+  --ink:#201E17;--ink-dim:#6B6555;--iron:#4B6167;--brass:#93701F;--up:#5E7A34;--down:#92402C;}
 *{box-sizing:border-box;}
-html{scroll-padding-top: env(safe-area-inset-top, 0px);}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,sans-serif;min-height:100%;line-height:1.5;}
-h1,h2,h3,.num{font-family:'Space Grotesk',sans-serif;}
-.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 80px;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,sans-serif;font-size:16px;line-height:1.5;}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 90px;}
 
-header.top{display:flex;align-items:baseline;justify-content:space-between;padding:18px 0 22px;border-bottom:1px solid var(--line);margin-bottom:22px;}
-header.top .brand{display:flex;align-items:baseline;gap:10px;}
-header.top h1{font-size:22px;font-weight:700;margin:0;letter-spacing:0.01em;}
-header.top .sub{color:var(--ink-dim);font-size:13px;}
-.theme-btn{background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:var(--radius);padding:6px 10px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
-.theme-btn:hover{border-color:var(--iron);color:var(--ink);}
-.sync-badge{font-size:11px;color:var(--ink-dim);border:1px solid var(--line);border-radius:var(--radius);padding:5px 9px;}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:14px 2px 18px;border-bottom:1px solid var(--line);margin-bottom:16px;}
+header.top h1{font-size:22px;margin:0;}
+.top-right{display:flex;gap:8px;align-items:center;}
+.sync-badge{font-size:12px;color:var(--ink-dim);border:1px solid var(--line);border-radius:var(--radius);padding:6px 10px;}
 .sync-badge.on{color:var(--up);border-color:var(--up);}
+.theme-btn{background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:var(--radius);padding:8px 12px;font-size:13px;cursor:pointer;}
 
-.layout{display:grid;grid-template-columns:1fr 1.35fr;gap:20px;align-items:start;}
-@media (max-width:900px){.layout{grid-template-columns:1fr;}}
+.tabs{display:flex;gap:8px;margin-bottom:20px;}
+.tabs button{flex:1;background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;padding:14px 8px;border-radius:var(--radius);cursor:pointer;}
+.tabs button.active{color:var(--bg);background:var(--brass);border-color:var(--brass);}
 
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
-.card h2{margin:0 0 14px;font-size:16px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:18px;}
+.card h2{margin:0 0 16px;font-size:19px;}
+.backrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.backbtn{background:none;border:1px solid var(--line);color:var(--ink);border-radius:var(--radius);padding:9px 14px;font-size:14px;cursor:pointer;}
 
-.cat-block{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;}
-.cat-block:first-child{border-top:none;margin-top:0;padding-top:0;}
-.cat-block h3{margin:0 0 8px;font-size:12px;color:var(--brass);letter-spacing:.03em;font-weight:600;}
-.ex-row{display:flex;align-items:center;gap:8px;padding:6px 0;}
-.ex-row .nm{flex:1;font-size:13px;}
-.ex-row .wt-input{width:64px;text-align:right;}
-.ex-row .unit{font-size:12px;color:var(--ink-dim);}
-.ex-row .rm{background:none;border:none;color:var(--ink-dim);cursor:pointer;font-size:14px;padding:2px 4px;}
+/* category grid */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media (max-width:480px){.cat-grid{grid-template-columns:1fr;}}
+.cat-card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;cursor:pointer;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;}
+.cat-card .cnt{display:block;color:var(--ink-dim);font-family:'Inter',sans-serif;font-weight:400;font-size:13px;margin-top:4px;}
+.cat-card:hover{border-color:var(--brass);}
+
+/* exercise rows in library detail */
+.ex-row{padding:14px 0;border-bottom:1px solid var(--line);}
+.ex-row:last-child{border-bottom:none;}
+.ex-row .nm{font-weight:600;font-size:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ex-row .rm{background:none;border:none;color:var(--ink-dim);font-size:18px;cursor:pointer;padding:4px 8px;}
 .ex-row .rm:hover{color:var(--down);}
-.add-ex-row{display:flex;gap:6px;margin-top:8px;}
+.w-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.w-field label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:4px;}
+.add-ex-row{display:flex;gap:8px;margin-top:14px;}
 .add-ex-row input{flex:1;}
-.add-ex-row button{white-space:nowrap;}
-
-.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
-.stat{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;flex:1;min-width:130px;}
-.stat .lbl{font-size:11px;color:var(--ink-dim);margin-bottom:4px;}
-.stat .val{font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;}
-.stat .delta{font-size:12px;margin-top:2px;}
-
-.cat-vol{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
-.cat-vol-row{display:flex;align-items:center;gap:8px;font-size:12px;}
-.cat-vol-row .cname{width:80px;color:var(--ink-dim);flex-shrink:0;}
-.cat-vol-row .bar-wrap{flex:1;background:var(--surface-2);border-radius:2px;height:8px;overflow:hidden;}
-.cat-vol-row .bar{height:100%;background:var(--iron);}
-.cat-vol-row .cval{width:70px;text-align:right;flex-shrink:0;color:var(--ink-dim);}
-
-.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;overflow-x:auto;}
-@media (max-width:1100px){.day-grid{grid-template-columns:repeat(4,minmax(140px,1fr));}}
-@media (max-width:560px){.day-grid{grid-template-columns:1fr;}}
-.day-col{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px;min-height:70px;}
-.day-col h3{margin:0 0 10px;font-size:13px;color:var(--ink-dim);font-weight:600;letter-spacing:.02em;}
-
-.ex-chip{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:7px;position:relative;overflow:hidden;}
-.ex-chip .head{padding:8px 26px 8px 9px;cursor:pointer;font-size:13px;}
-.ex-chip .head .nm{font-weight:600;display:block;margin-bottom:2px;}
-.ex-chip .head .meta{color:var(--ink-dim);font-size:11px;}
-.ex-chip .head .meta.trend-up{color:var(--up);}
-.ex-chip .head .meta.trend-down{color:var(--down);}
-.ex-chip .rm{position:absolute;top:6px;right:6px;background:none;border:none;color:var(--ink-dim);cursor:pointer;font-size:14px;line-height:1;padding:2px;}
-.ex-chip .rm:hover{color:var(--down);}
-.log-form{display:none;padding:8px 9px 10px;border-top:1px solid var(--line);background:var(--surface-2);}
-.log-form.open{display:block;}
-.log-form .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;}
-.log-form label{font-size:10px;color:var(--ink-dim);display:block;margin-bottom:2px;}
-.log-form input{font-size:12px;padding:6px 7px;}
-.log-form .save-btn{width:100%;font-size:12px;padding:7px;}
-.add-to-day{width:100%;margin-top:4px;font-size:12px;}
 
 select,input[type=number],input[type=text],input[type=date]{
   background:var(--surface-2);border:1px solid var(--line);color:var(--ink);
-  border-radius:var(--radius);padding:8px 9px;font-size:13px;font-family:'Inter',sans-serif;width:100%;
-}
+  border-radius:var(--radius);padding:11px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;min-height:46px;}
 select:focus,input:focus{outline:2px solid var(--iron);outline-offset:1px;}
-button.primary{background:var(--brass);color:var(--bg);border:none;border-radius:var(--radius);padding:9px 16px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
+button.primary{background:var(--brass);color:var(--bg);border:none;border-radius:var(--radius);
+  padding:12px 18px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;cursor:pointer;min-height:46px;}
 button.primary:hover{filter:brightness(1.08);}
-.empty{color:var(--ink-dim);font-size:12px;padding:10px 0;}
-footer{margin-top:30px;text-align:center;color:var(--ink-dim);font-size:11px;}
+.empty{color:var(--ink-dim);font-size:14px;padding:12px 0;}
+
+/* program stats */
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;flex:1;min-width:150px;}
+.stat .lbl{font-size:12px;color:var(--ink-dim);margin-bottom:6px;}
+.stat .val{font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+.stat .delta{font-size:12px;margin-top:4px;}
+.cat-vol{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.cat-vol-row{display:flex;align-items:center;gap:10px;font-size:13px;}
+.cat-vol-row .cname{width:90px;color:var(--ink-dim);flex-shrink:0;}
+.cat-vol-row .bar-wrap{flex:1;background:var(--surface-2);border-radius:3px;height:10px;overflow:hidden;}
+.cat-vol-row .bar{height:100%;background:var(--iron);}
+.cat-vol-row .cval{width:80px;text-align:right;flex-shrink:0;color:var(--ink-dim);}
+
+/* day list */
+.day-card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.day-card h3{margin:0 0 12px;font-size:15px;letter-spacing:.02em;}
+.ex-chip{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.ex-chip .head{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.ex-chip .head .txt .nm{font-weight:600;font-size:15px;display:block;margin-bottom:4px;}
+.ex-chip .head .txt .meta{color:var(--ink-dim);font-size:12.5px;display:block;}
+.ex-chip .head .txt .meta.log-line{margin-top:2px;}
+.ex-chip .head .txt .meta.trend-up{color:var(--up);}
+.ex-chip .head .txt .meta.trend-down{color:var(--down);}
+.ex-chip .icons{display:flex;gap:4px;flex-shrink:0;}
+.ex-chip .icons button{background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:6px;
+  width:34px;height:34px;font-size:15px;cursor:pointer;flex-shrink:0;}
+.ex-chip .icons button:hover{border-color:var(--iron);color:var(--ink);}
+.swap-box{padding:0 14px 14px;}
+.log-form{display:none;padding:12px 14px 16px;border-top:1px solid var(--line);background:var(--surface-2);}
+.log-form.open{display:block;}
+.lf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.log-form label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:5px;}
+.log-form .save-btn{width:100%;}
+.add-to-day{width:100%;margin-top:6px;}
+
+footer{margin-top:24px;text-align:center;color:var(--ink-dim);font-size:12px;}
 </style>
 </head>
 <body>
 <div class="wrap">
-
 <header class="top">
-  <div class="brand">
-    <h1>Подход</h1>
-    <span class="sub">журнал тренировок</span>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;">
+  <h1>Подход</h1>
+  <div class="top-right">
     <span class="sync-badge" id="syncBadge">локально</span>
     <button class="theme-btn" id="themeToggle">Тема</button>
   </div>
 </header>
 
-<div class="layout">
-  <div class="card" id="libraryCard">
-    <h2>Упражнения по группам мышц</h2>
-    <div id="catList"></div>
-  </div>
-
-  <div>
-    <div class="card">
-      <h2>Программа на неделю</h2>
-      <div class="stat-row" id="weekStats"></div>
-      <div class="cat-vol" id="catVolBreakdown"></div>
-      <div class="day-grid" id="dayGrid"></div>
-    </div>
-  </div>
+<div class="tabs">
+  <button class="tab-btn active" data-tab="library">Упражнения</button>
+  <button class="tab-btn" data-tab="program">Программа</button>
 </div>
+
+<div id="viewLibrary"></div>
+<div id="viewProgram" style="display:none"></div>
 
 <footer>Данные хранятся в облаке Telegram (или локально в браузере, если открыто не в Telegram).</footer>
 </div>
 
 <script>
 const DAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
-const CATEGORIES = ["Грудь","Спина","Ноги","Плечи","Бицепс","Трицепс","Предплечья","Трапеция","Шея","Пресс","Икры"];
+const CATEGORIES = ["Грудь","Спина","Ноги","Плечи","Бицепс","Трицепс","Предплечья","Трапеция","Шея","Икры","Пресс"];
 
-/* ---------- Telegram integration ---------- */
+/* ---------- Telegram ---------- */
 function tg(){ return (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null; }
-function isTelegramCloud(){ const t = tg(); return !!(t && t.CloudStorage); }
-
-function applyTelegramTheme(){
-  const t = tg();
-  if(!t) return;
-  const tp = t.themeParams || {};
-  const root = document.documentElement;
-  if(tp.bg_color) root.style.setProperty('--bg', tp.bg_color);
-  if(tp.secondary_bg_color) root.style.setProperty('--surface-2', tp.secondary_bg_color);
-  if(tp.bg_color) root.style.setProperty('--surface', tp.bg_color);
-  if(tp.text_color) root.style.setProperty('--ink', tp.text_color);
-  if(tp.hint_color) root.style.setProperty('--ink-dim', tp.hint_color);
-  if(tp.button_color) root.style.setProperty('--brass', tp.button_color);
-  if(tp.link_color) root.style.setProperty('--iron', tp.link_color);
-  try{ t.setHeaderColor && t.setHeaderColor(tp.bg_color || '#15140F'); }catch(e){}
-  try{ t.setBackgroundColor && t.setBackgroundColor(tp.bg_color || '#15140F'); }catch(e){}
+function isTgCloud(){ const t=tg(); return !!(t && t.CloudStorage); }
+function applyTheme(){
+  const t=tg(); if(!t) return;
+  const tp=t.themeParams||{}; const r=document.documentElement;
+  if(tp.bg_color){r.style.setProperty('--bg',tp.bg_color); r.style.setProperty('--surface',tp.bg_color);}
+  if(tp.secondary_bg_color) r.style.setProperty('--surface-2',tp.secondary_bg_color);
+  if(tp.text_color) r.style.setProperty('--ink',tp.text_color);
+  if(tp.hint_color) r.style.setProperty('--ink-dim',tp.hint_color);
+  if(tp.button_color) r.style.setProperty('--brass',tp.button_color);
+  if(tp.link_color) r.style.setProperty('--iron',tp.link_color);
+  try{ t.setHeaderColor&&t.setHeaderColor(tp.bg_color||'#15140F'); t.setBackgroundColor&&t.setBackgroundColor(tp.bg_color||'#15140F'); }catch(e){}
+}
+function initTg(){
+  const t=tg(); if(!t) return;
+  try{ t.ready(); t.expand(); applyTheme(); t.onEvent&&t.onEvent('themeChanged',applyTheme); }catch(e){}
+  document.getElementById("themeToggle").style.display="none";
+  const b=document.getElementById("syncBadge");
+  if(isTgCloud()){ b.textContent="облако Telegram"; b.classList.add("on"); }
 }
 
-function initTelegram(){
-  const t = tg();
-  if(!t) return;
-  try{
-    t.ready();
-    t.expand();
-    applyTelegramTheme();
-    t.onEvent && t.onEvent('themeChanged', applyTelegramTheme);
-  }catch(e){ console.error("telegram init failed", e); }
-  document.getElementById("themeToggle").style.display = "none";
-  const badge = document.getElementById("syncBadge");
-  if(isTelegramCloud()){ badge.textContent = "облако Telegram"; badge.classList.add("on"); }
-}
-
-/* ---------- Storage layer: Telegram CloudStorage with localStorage fallback ---------- */
-const META_KEY = "podhod_meta";
-const CHUNK_PREFIX = "podhod_c_";
-const CHUNK_SIZE = 3500;
-
-function cloudGetItem(key){
-  return new Promise(resolve=>{
-    if(isTelegramCloud()){
-      tg().CloudStorage.getItem(key, (err, value)=>{ resolve(err ? null : (value || null)); });
-    } else {
-      try{ resolve(localStorage.getItem(key)); }catch(e){ resolve(null); }
-    }
-  });
-}
-function cloudSetItem(key, value){
-  return new Promise(resolve=>{
-    if(isTelegramCloud()){
-      tg().CloudStorage.setItem(key, value, (err, ok)=>{ resolve(!err); });
-    } else {
-      try{ localStorage.setItem(key, value); resolve(true); }catch(e){ resolve(false); }
-    }
-  });
-}
-function cloudRemoveItems(keys){
-  return new Promise(resolve=>{
-    if(!keys.length){ resolve(true); return; }
-    if(isTelegramCloud()){
-      tg().CloudStorage.removeItems(keys, (err, ok)=>{ resolve(!err); });
-    } else {
-      try{ keys.forEach(k=>localStorage.removeItem(k)); resolve(true); }catch(e){ resolve(false); }
-    }
-  });
-}
-
+/* ---------- Storage ---------- */
+const META_KEY="podhod_meta", CHUNK_PREFIX="podhod_c_", CHUNK_SIZE=3500;
+function cGet(k){ return new Promise(res=>{ if(isTgCloud()){ tg().CloudStorage.getItem(k,(e,v)=>res(e?null:(v||null))); } else { try{res(localStorage.getItem(k));}catch(e){res(null);} } }); }
+function cSet(k,v){ return new Promise(res=>{ if(isTgCloud()){ tg().CloudStorage.setItem(k,v,(e,ok)=>res(!e)); } else { try{localStorage.setItem(k,v);res(true);}catch(e){res(false);} } }); }
+function cRemove(ks){ return new Promise(res=>{ if(!ks.length){res(true);return;} if(isTgCloud()){ tg().CloudStorage.removeItems(ks,(e)=>res(!e)); } else { try{ks.forEach(k=>localStorage.removeItem(k));res(true);}catch(e){res(false);} } }); }
 async function loadDataAsync(){
   try{
-    const metaRaw = await cloudGetItem(META_KEY);
-    if(!metaRaw) return defaultData();
-    const meta = JSON.parse(metaRaw);
-    const count = meta.count || 0;
-    if(!count) return defaultData();
-    let full = "";
-    for(let i=0;i<count;i++){
-      full += (await cloudGetItem(CHUNK_PREFIX+i)) || "";
-    }
-    return JSON.parse(full);
-  }catch(e){
-    console.error("load failed", e);
-    return defaultData();
-  }
+    const meta = await cGet(META_KEY); if(!meta) return defaultData();
+    const count = JSON.parse(meta).count||0; if(!count) return defaultData();
+    let full=""; for(let i=0;i<count;i++){ full += (await cGet(CHUNK_PREFIX+i))||""; }
+    const parsed = JSON.parse(full);
+    Object.values(parsed.exercises||{}).forEach(ex=>{
+      if(ex.w8===undefined) ex.w8 = ex.refWeight||0;
+      if(ex.w5===undefined) ex.w5 = 0;
+      if(ex.w12===undefined) ex.w12 = 0;
+    });
+    return parsed;
+  }catch(e){ return defaultData(); }
 }
-
-let saveInFlight = false, saveQueued = false;
+let saveBusy=false, saveAgain=false;
 async function saveDataAsync(){
-  if(saveInFlight){ saveQueued = true; return; }
-  saveInFlight = true;
+  if(saveBusy){ saveAgain=true; return; }
+  saveBusy=true;
   try{
-    const json = JSON.stringify(data);
-    const chunks = [];
-    for(let i=0;i<json.length;i+=CHUNK_SIZE){ chunks.push(json.slice(i,i+CHUNK_SIZE)); }
+    const json=JSON.stringify(data);
+    const chunks=[]; for(let i=0;i<json.length;i+=CHUNK_SIZE) chunks.push(json.slice(i,i+CHUNK_SIZE));
     if(!chunks.length) chunks.push("");
-    const metaRaw = await cloudGetItem(META_KEY);
-    const oldCount = metaRaw ? (JSON.parse(metaRaw).count||0) : 0;
-    for(let i=0;i<chunks.length;i++){ await cloudSetItem(CHUNK_PREFIX+i, chunks[i]); }
-    if(oldCount > chunks.length){
-      const toRemove = [];
-      for(let i=chunks.length;i<oldCount;i++) toRemove.push(CHUNK_PREFIX+i);
-      await cloudRemoveItems(toRemove);
-    }
-    await cloudSetItem(META_KEY, JSON.stringify({count: chunks.length}));
-  }catch(e){
-    console.error("save failed", e);
-  }
-  saveInFlight = false;
-  if(saveQueued){ saveQueued = false; saveDataAsync(); }
+    const metaRaw = await cGet(META_KEY); const oldCount = metaRaw?(JSON.parse(metaRaw).count||0):0;
+    for(let i=0;i<chunks.length;i++) await cSet(CHUNK_PREFIX+i, chunks[i]);
+    if(oldCount>chunks.length){ const rm=[]; for(let i=chunks.length;i<oldCount;i++) rm.push(CHUNK_PREFIX+i); await cRemove(rm); }
+    await cSet(META_KEY, JSON.stringify({count:chunks.length}));
+  }catch(e){}
+  saveBusy=false; if(saveAgain){ saveAgain=false; saveDataAsync(); }
 }
 function saveData(){ saveDataAsync(); }
 
 function defaultData(){
-  const ex = {
-    "ex1":{name:"Жим лёжа",category:"Грудь",refWeight:60},
-    "ex2":{name:"Становая тяга",category:"Спина",refWeight:80},
-    "ex3":{name:"Подтягивания",category:"Спина",refWeight:0},
-    "ex4":{name:"Приседания",category:"Ноги",refWeight:70},
-    "ex5":{name:"Жим стоя",category:"Плечи",refWeight:35},
-    "ex6":{name:"Подъём штанги на бицепс",category:"Бицепс",refWeight:25},
-    "ex7":{name:"Французский жим",category:"Трицепс",refWeight:20},
-    "ex8":{name:"Шраги",category:"Трапеция",refWeight:40},
-    "ex9":{name:"Подъёмы на носки",category:"Икры",refWeight:50}
+  const ex={
+    ex1:{name:"Жим лёжа",category:"Грудь",w5:0,w8:60,w12:0},
+    ex2:{name:"Становая тяга",category:"Спина",w5:0,w8:80,w12:0},
+    ex3:{name:"Подтягивания",category:"Спина",w5:0,w8:0,w12:0},
+    ex4:{name:"Приседания",category:"Ноги",w5:0,w8:70,w12:0},
+    ex5:{name:"Жим стоя",category:"Плечи",w5:0,w8:35,w12:0},
+    ex6:{name:"Подъём штанги на бицепс",category:"Бицепс",w5:0,w8:25,w12:0},
+    ex7:{name:"Французский жим",category:"Трицепс",w5:0,w8:20,w12:0},
+    ex8:{name:"Шраги",category:"Трапеция",w5:0,w8:40,w12:0},
+    ex9:{name:"Подъёмы на носки",category:"Икры",w5:0,w8:50,w12:0}
   };
-  return {
-    exercises: ex,
-    program: { "Пн":["ex1","ex2"], "Вт":[], "Ср":["ex4"], "Чт":[], "Пт":["ex1","ex2"], "Сб":[], "Вс":[] },
-    logs: []
-  };
+  return { exercises:ex, program:{"Пн":["ex1","ex2"],"Вт":[],"Ср":["ex4"],"Чт":[],"Пт":["ex1","ex2"],"Сб":[],"Вс":[]}, logs:[] };
 }
 
 let data = defaultData();
 let nextExId = 1;
-let openChip = null;
+let ui = { tab:"library", libMode:"categories", libCat:null, openChip:null, swapChip:null, drafts:{} };
 
-function recalcNextExId(){
-  const ids = Object.keys(data.exercises);
-  nextExId = ids.length ? Math.max(...ids.map(k=>parseInt(k.replace("ex",""))||0)) + 1 : 1;
-}
-function uid(){ return "ex" + (nextExId++); }
-function logUid(){ return "log" + Date.now() + Math.floor(Math.random()*1000); }
+function recalcNextId(){ const ids=Object.keys(data.exercises); nextExId = ids.length? Math.max(...ids.map(k=>parseInt(k.replace("ex",""))||0))+1 : 1; }
+function uid(){ return "ex"+(nextExId++); }
+function logUid(){ return "log"+Date.now()+Math.floor(Math.random()*1000); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 
-/* ---------- Theme toggle (browser fallback only) ---------- */
 document.getElementById("themeToggle").addEventListener("click", ()=>{
-  const cur = document.documentElement.getAttribute("data-theme");
-  document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  const cur=document.documentElement.getAttribute("data-theme");
+  document.documentElement.setAttribute("data-theme", cur==="dark"?"light":"dark");
+});
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    ui.tab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("viewLibrary").style.display = ui.tab==="library"?"block":"none";
+    document.getElementById("viewProgram").style.display = ui.tab==="program"?"block":"none";
+    renderAll();
+  });
 });
 
-/* ---------- Left: exercise library ---------- */
-function renderCatList(){
-  const wrap = document.getElementById("catList");
-  wrap.innerHTML = "";
-  CATEGORIES.forEach(cat=>{
-    const ids = Object.keys(data.exercises).filter(id=>data.exercises[id].category===cat);
-    const block = document.createElement("div");
-    block.className = "cat-block";
-    block.innerHTML = `<h3>${cat}</h3>`;
-    const list = document.createElement("div");
-    if(!ids.length){
-      list.innerHTML = '<div class="empty">пока нет упражнений</div>';
-    } else {
-      ids.forEach(id=>{
-        const ex = data.exercises[id];
-        const row = document.createElement("div");
-        row.className = "ex-row";
-        row.innerHTML = `
-          <span class="nm">${ex.name}</span>
-          <input type="number" step="0.5" class="wt-input" value="${ex.refWeight ?? 0}">
-          <span class="unit">кг×8</span>
-        `;
-        const wtInput = row.querySelector(".wt-input");
-        wtInput.addEventListener("change", ()=>{
-          ex.refWeight = parseFloat(wtInput.value) || 0;
-          saveData();
-          renderDayGrid();
-        });
-        const rm = document.createElement("button");
-        rm.className = "rm"; rm.textContent = "×"; rm.title = "Удалить упражнение";
-        rm.addEventListener("click", ()=>{
-          if(!confirm(`Удалить «${ex.name}» из библиотеки и из плана?`)) return;
-          delete data.exercises[id];
-          Object.keys(data.program).forEach(d=>{ data.program[d] = data.program[d].filter(x=>x!==id); });
-          saveData();
-          renderCatList();
-          renderDayGrid();
-        });
-        row.appendChild(rm);
-        list.appendChild(row);
-      });
-    }
-    block.appendChild(list);
-
-    const addRow = document.createElement("div");
-    addRow.className = "add-ex-row";
-    addRow.innerHTML = `<input type="text" placeholder="Новое упражнение">`;
-    const addBtn = document.createElement("button");
-    addBtn.className = "primary"; addBtn.textContent = "+";
-    const nameInput = addRow.querySelector("input");
-    addBtn.addEventListener("click", ()=>{
-      const name = nameInput.value.trim();
-      if(!name) return;
-      const id = uid();
-      data.exercises[id] = {name, category:cat, refWeight:0};
-      saveData();
-      renderCatList();
-      renderDayGrid();
+/* ---------- Library ---------- */
+function renderLibrary(){
+  const root = document.getElementById("viewLibrary");
+  if(ui.libMode==="categories"){
+    root.innerHTML = `<div class="card"><h2>Упражнения по группам мышц</h2><div class="cat-grid" id="catGrid"></div></div>`;
+    const grid = document.getElementById("catGrid");
+    CATEGORIES.forEach(cat=>{
+      const cnt = Object.values(data.exercises).filter(e=>e.category===cat).length;
+      const card = document.createElement("button");
+      card.className="cat-card";
+      card.innerHTML = `${cat}<span class="cnt">${cnt} упражнени${cnt===1?'е':(cnt>=2&&cnt<=4?'я':'й')}</span>`;
+      card.addEventListener("click", ()=>{ ui.libMode="category"; ui.libCat=cat; renderLibrary(); });
+      grid.appendChild(card);
     });
-    nameInput.addEventListener("keydown", e=>{ if(e.key==="Enter") addBtn.click(); });
-    addRow.appendChild(addBtn);
-    block.appendChild(addRow);
-
-    wrap.appendChild(block);
+    return;
+  }
+  // category detail
+  const cat = ui.libCat;
+  const ids = Object.keys(data.exercises).filter(id=>data.exercises[id].category===cat);
+  root.innerHTML = `
+    <div class="card">
+      <div class="backrow"><button class="backbtn" id="backBtn">← Категории</button></div>
+      <h2>${cat}</h2>
+      <div id="exListBox"></div>
+      <div class="add-ex-row">
+        <input type="text" id="newExName" placeholder="Новое упражнение">
+        <button class="primary" id="addExBtn">Добавить</button>
+      </div>
+    </div>`;
+  document.getElementById("backBtn").addEventListener("click", ()=>{ ui.libMode="categories"; renderLibrary(); });
+  const box = document.getElementById("exListBox");
+  if(!ids.length){ box.innerHTML = '<div class="empty">Пока нет упражнений в этой группе</div>'; }
+  else {
+    ids.forEach(id=>{
+      const ex = data.exercises[id];
+      const row = document.createElement("div"); row.className="ex-row";
+      row.innerHTML = `
+        <div class="nm">${ex.name}<button class="rm" title="Удалить">×</button></div>
+        <div class="w-grid">
+          <div class="w-field"><label>5 повт.</label><input type="number" step="0.5" class="w5in" value="${ex.w5||0}"></div>
+          <div class="w-field"><label>8 повт.</label><input type="number" step="0.5" class="w8in" value="${ex.w8||0}"></div>
+          <div class="w-field"><label>12 повт.</label><input type="number" step="0.5" class="w12in" value="${ex.w12||0}"></div>
+        </div>`;
+      row.querySelector(".w5in").addEventListener("change", e=>{ ex.w5=parseFloat(e.target.value)||0; saveData(); });
+      row.querySelector(".w8in").addEventListener("change", e=>{ ex.w8=parseFloat(e.target.value)||0; saveData(); });
+      row.querySelector(".w12in").addEventListener("change", e=>{ ex.w12=parseFloat(e.target.value)||0; saveData(); });
+      row.querySelector(".rm").addEventListener("click", ()=>{
+        if(!confirm(`Удалить «${ex.name}»?`)) return;
+        delete data.exercises[id];
+        Object.keys(data.program).forEach(d=>{ data.program[d]=data.program[d].filter(x=>x!==id); });
+        saveData(); renderLibrary(); renderProgram();
+      });
+      box.appendChild(row);
+    });
+  }
+  document.getElementById("addExBtn").addEventListener("click", ()=>{
+    const inp = document.getElementById("newExName");
+    const name = inp.value.trim(); if(!name) return;
+    const id = uid();
+    data.exercises[id] = {name, category:cat, w5:0, w8:0, w12:0};
+    saveData(); renderLibrary();
   });
 }
 
-/* ---------- Right: program + logging ---------- */
-function volume(entry){ return (entry.weight||0)*(entry.reps||0)*(entry.sets||0); }
-
+/* ---------- Program ---------- */
+function volume(e){ return (e.weight||0)*(e.reps||0)*(e.sets||0); }
 function weekBounds(dateStr){
-  const d = new Date(dateStr+"T00:00:00");
-  const jsDay = d.getDay();
-  const offsetToMonday = (jsDay+6)%7;
-  const monday = new Date(d); monday.setDate(d.getDate()-offsetToMonday);
-  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
-  const fmt = x=>x.toISOString().slice(0,10);
-  return {start: fmt(monday), end: fmt(sunday)};
+  const d=new Date(dateStr+"T00:00:00"); const jsDay=d.getDay(); const off=(jsDay+6)%7;
+  const mon=new Date(d); mon.setDate(d.getDate()-off); const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  const f=x=>x.toISOString().slice(0,10); return {start:f(mon),end:f(sun)};
 }
-function sumVolumeInRange(start,end){
-  return data.logs.filter(l=>l.date>=start && l.date<=end).reduce((s,l)=>s+volume(l),0);
-}
-function lastTwoLogs(exId){
-  return data.logs.filter(l=>l.exerciseId===exId).sort((a,b)=> a.date<b.date?1:-1).slice(0,2);
-}
+function sumVol(s,e){ return data.logs.filter(l=>l.date>=s&&l.date<=e).reduce((a,l)=>a+volume(l),0); }
+function lastTwo(exId){ return data.logs.filter(l=>l.exerciseId===exId).sort((a,b)=>a.date<b.date?1:-1).slice(0,2); }
 
-function renderWeekStats(){
-  const today = todayISO();
-  const thisWeek = weekBounds(today);
-  const lw = new Date(thisWeek.start+"T00:00:00"); lw.setDate(lw.getDate()-7);
-  const lastWeek = weekBounds(lw.toISOString().slice(0,10));
-  const curVol = sumVolumeInRange(thisWeek.start, thisWeek.end);
-  const prevVol = sumVolumeInRange(lastWeek.start, lastWeek.end);
-  const delta = prevVol ? (((curVol-prevVol)/prevVol)*100) : null;
-
-  document.getElementById("weekStats").innerHTML = `
-    <div class="stat">
-      <div class="lbl">Объём этой недели</div>
-      <div class="val">${curVol.toLocaleString("ru-RU")} кг</div>
-      <div class="delta" style="color:${delta===null?'var(--ink-dim)':(delta>=0?'var(--up)':'var(--down)')}">
-        ${delta===null ? "нет данных за прошлую неделю" : (delta>=0?"+":"")+delta.toFixed(1)+"% к прошлой неделе"}
-      </div>
-    </div>
-    <div class="stat">
-      <div class="lbl">Прошлая неделя</div>
-      <div class="val">${prevVol.toLocaleString("ru-RU")} кг</div>
-    </div>
-  `;
+function renderProgram(){
+  const root = document.getElementById("viewProgram");
+  const today = todayISO(); const wk = weekBounds(today);
+  const lw = new Date(wk.start+"T00:00:00"); lw.setDate(lw.getDate()-7);
+  const pwk = weekBounds(lw.toISOString().slice(0,10));
+  const cur = sumVol(wk.start,wk.end), prev = sumVol(pwk.start,pwk.end);
+  const delta = prev ? ((cur-prev)/prev*100) : null;
 
   const byCat = {};
-  data.logs.filter(l=>l.date>=thisWeek.start && l.date<=thisWeek.end).forEach(l=>{
-    const ex = data.exercises[l.exerciseId];
-    if(!ex) return;
-    byCat[ex.category] = (byCat[ex.category]||0) + volume(l);
+  data.logs.filter(l=>l.date>=wk.start&&l.date<=wk.end).forEach(l=>{
+    const ex=data.exercises[l.exerciseId]; if(!ex) return;
+    byCat[ex.category]=(byCat[ex.category]||0)+volume(l);
   });
-  const maxCat = Math.max(1, ...Object.values(byCat));
-  const catWrap = document.getElementById("catVolBreakdown");
+  const maxCat = Math.max(1,...Object.values(byCat));
   const activeCats = CATEGORIES.filter(c=>byCat[c]);
-  if(!activeCats.length){
-    catWrap.innerHTML = '<div class="empty">За эту неделю пока нет записей — объём по группам появится после первой тренировки</div>';
-  } else {
-    catWrap.innerHTML = activeCats.map(c=>`
-      <div class="cat-vol-row">
-        <span class="cname">${c}</span>
-        <span class="bar-wrap"><span class="bar" style="width:${(byCat[c]/maxCat*100).toFixed(0)}%"></span></span>
-        <span class="cval">${byCat[c].toLocaleString("ru-RU")} кг</span>
+
+  root.innerHTML = `
+    <div class="card">
+      <h2>Программа на неделю</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="lbl">Объём этой недели</div><div class="val">${cur.toLocaleString("ru-RU")} кг</div>
+          <div class="delta" style="color:${delta===null?'var(--ink-dim)':(delta>=0?'var(--up)':'var(--down)')}">
+            ${delta===null?"нет данных за прошлую неделю":(delta>=0?"+":"")+delta.toFixed(1)+"% к прошлой неделе"}</div></div>
+        <div class="stat"><div class="lbl">Прошлая неделя</div><div class="val">${prev.toLocaleString("ru-RU")} кг</div></div>
       </div>
-    `).join("");
-  }
-}
+      <div class="cat-vol">${activeCats.length ? activeCats.map(c=>`
+        <div class="cat-vol-row"><span class="cname">${c}</span>
+          <span class="bar-wrap"><span class="bar" style="width:${(byCat[c]/maxCat*100).toFixed(0)}%"></span></span>
+          <span class="cval">${byCat[c].toLocaleString("ru-RU")} кг</span></div>`).join("")
+        : '<div class="empty">За эту неделю пока нет записей</div>'}</div>
+    </div>
+    <div id="daysBox"></div>`;
 
-function renderDayGrid(){
-  const grid = document.getElementById("dayGrid");
-  grid.innerHTML = "";
+  const daysBox = document.getElementById("daysBox");
   DAYS.forEach(day=>{
-    const col = document.createElement("div");
-    col.className = "day-col";
+    const col = document.createElement("div"); col.className="day-card";
     col.innerHTML = `<h3>${day}</h3>`;
-
-    (data.program[day] || []).forEach(exId=>{
-      const ex = data.exercises[exId];
-      if(!ex) return;
+    (data.program[day]||[]).forEach(exId=>{
+      const ex = data.exercises[exId]; if(!ex) return;
       const chipKey = day+"__"+exId;
-      const [last, prev] = lastTwoLogs(exId);
-      let trendClass = "", trendText = "нет записей";
+      const [last, prev2] = lastTwo(exId);
+      let trendClass="", logLine = "";
       if(last){
-        trendText = `${last.date}: ${last.weight} кг × ${last.reps} × ${last.sets}`;
-        if(prev){
-          const lv = volume(last), pv = volume(prev);
-          if(lv>pv){ trendClass="trend-up"; trendText += " ↑"; }
-          else if(lv<pv){ trendClass="trend-down"; trendText += " ↓"; }
-        }
+        logLine = `${last.date}: ${last.weight} кг × ${last.reps} × ${last.sets}`;
+        if(prev2){ const lv=volume(last), pv=volume(prev2);
+          if(lv>pv){trendClass="trend-up"; logLine+=" ↑";} else if(lv<pv){trendClass="trend-down"; logLine+=" ↓";} }
       }
+      const refLine = `Реф: 5×${ex.w5||'–'} · 8×${ex.w8||'–'} · 12×${ex.w12||'–'} кг`;
 
-      const chip = document.createElement("div");
-      chip.className = "ex-chip";
+      if(!ui.drafts[chipKey]) ui.drafts[chipKey] = {
+        date: today,
+        weight: last?last.weight:(ex.w8||ex.w5||ex.w12||0),
+        reps: last?last.reps:8,
+        sets: last?last.sets:3
+      };
+      const dr = ui.drafts[chipKey];
+
+      const chip = document.createElement("div"); chip.className="ex-chip";
       chip.innerHTML = `
         <div class="head">
-          <span class="nm">${ex.name}</span>
-          <span class="meta ${trendClass}">${trendText}</span>
-        </div>
-        <div class="log-form ${openChip===chipKey?'open':''}">
-          <div class="row3">
-            <div><label>Дата</label><input type="date" class="lf-date" value="${todayISO()}"></div>
-            <div><label>Вес,кг</label><input type="number" step="0.5" class="lf-weight" value="${last?last.weight:ex.refWeight||0}"></div>
-            <div><label>Повт</label><input type="number" class="lf-reps" value="${last?last.reps:8}"></div>
+          <div class="txt">
+            <span class="nm">${ex.name}</span>
+            <span class="meta">${refLine}</span>
+            ${logLine?`<span class="meta log-line ${trendClass}">${logLine}</span>`:''}
           </div>
-          <div class="row3" style="grid-template-columns:1fr;">
-            <div><label>Подходы</label><input type="number" class="lf-sets" value="${last?last.sets:3}"></div>
+          <div class="icons">
+            <button class="swapBtn" title="Заменить">⇄</button>
+            <button class="rmBtn" title="Убрать из дня">×</button>
+          </div>
+        </div>
+        <div class="swap-box" style="display:${ui.swapChip===chipKey?'block':'none'}"></div>
+        <div class="log-form ${ui.openChip===chipKey?'open':''}">
+          <div class="lf-grid">
+            <div><label>Дата</label><input type="date" class="lf-date" value="${dr.date}"></div>
+            <div><label>Вес, кг</label><input type="number" step="0.5" class="lf-weight" value="${dr.weight}"></div>
+            <div><label>Повторения</label><input type="number" class="lf-reps" value="${dr.reps}"></div>
+            <div><label>Подходы</label><input type="number" class="lf-sets" value="${dr.sets}"></div>
           </div>
           <button class="primary save-btn">Сохранить подход</button>
-        </div>
-      `;
-      const rm = document.createElement("button");
-      rm.className = "rm"; rm.textContent = "×"; rm.title = "Убрать из дня";
-      rm.addEventListener("click", (e)=>{
+        </div>`;
+
+      chip.querySelector(".head").addEventListener("click", (e)=>{
+        ui.openChip = (ui.openChip===chipKey)?null:chipKey; ui.swapChip=null; renderProgram();
+      });
+      chip.querySelector(".rmBtn").addEventListener("click", (e)=>{
         e.stopPropagation();
         data.program[day] = data.program[day].filter(x=>x!==exId);
-        saveData(); renderDayGrid();
+        saveData(); renderProgram();
       });
-      chip.appendChild(rm);
-
-      const head = chip.querySelector(".head");
-      head.addEventListener("click", ()=>{
-        openChip = (openChip===chipKey) ? null : chipKey;
-        renderDayGrid();
+      const swapBtn = chip.querySelector(".swapBtn");
+      swapBtn.addEventListener("click", (e)=>{
+        e.stopPropagation(); ui.swapChip = (ui.swapChip===chipKey)?null:chipKey; ui.openChip=null; renderProgram();
       });
+      if(ui.swapChip===chipKey){
+        const swapBox = chip.querySelector(".swap-box");
+        const others = Object.keys(data.exercises).filter(id=>id!==exId && !(data.program[day]||[]).includes(id));
+        const sel = document.createElement("select");
+        sel.innerHTML = '<option value="">Выбрать замену…</option>' + CATEGORIES.map(c=>{
+          const opts = others.filter(id=>data.exercises[id].category===c).map(id=>`<option value="${id}">${data.exercises[id].name}</option>`).join("");
+          return opts?`<optgroup label="${c}">${opts}</optgroup>`:"";
+        }).join("");
+        sel.addEventListener("click", e=>e.stopPropagation());
+        sel.addEventListener("change", ()=>{
+          if(!sel.value) return;
+          const idx = data.program[day].indexOf(exId);
+          if(idx>-1) data.program[day][idx] = sel.value;
+          ui.swapChip=null; saveData(); renderProgram();
+        });
+        swapBox.appendChild(sel);
+      }
 
-      const saveBtn = chip.querySelector(".save-btn");
-      saveBtn.addEventListener("click", (e)=>{
+      ["date","weight","reps","sets"].forEach(f=>{
+        const el = chip.querySelector(".lf-"+f);
+        el.addEventListener("input", ()=>{ dr[f] = (f==="date")?el.value:(parseFloat(el.value)||0); });
+        el.addEventListener("click", e=>e.stopPropagation());
+      });
+      chip.querySelector(".save-btn").addEventListener("click", (e)=>{
         e.stopPropagation();
-        const dateV = chip.querySelector(".lf-date").value || todayISO();
-        const weightV = parseFloat(chip.querySelector(".lf-weight").value) || 0;
-        const repsV = parseInt(chip.querySelector(".lf-reps").value) || 0;
-        const setsV = parseInt(chip.querySelector(".lf-sets").value) || 0;
-        data.logs.push({id: logUid(), exerciseId: exId, date: dateV, weight: weightV, reps: repsV, sets: setsV});
-        saveData();
-        openChip = null;
-        renderDayGrid();
-        renderWeekStats();
+        const dateV = dr.date || today;
+        const weightV = dr.weight||0, repsV = parseInt(dr.reps)||0, setsV = parseInt(dr.sets)||0;
+        data.logs.push({id:logUid(), exerciseId:exId, date:dateV, weight:weightV, reps:repsV, sets:setsV});
+        if(repsV===5) ex.w5=weightV; else if(repsV===8) ex.w8=weightV; else if(repsV===12) ex.w12=weightV;
+        delete ui.drafts[chipKey];
+        ui.openChip=null;
+        saveData(); renderProgram(); renderLibrary();
       });
 
       col.appendChild(chip);
     });
 
-    const availableIds = Object.keys(data.exercises).filter(id=>!(data.program[day]||[]).includes(id));
-    if(availableIds.length){
-      const sel = document.createElement("select");
-      sel.className = "add-to-day";
-      sel.innerHTML = '<option value="">+ добавить упражнение</option>' +
-        CATEGORIES.map(cat=>{
-          const opts = availableIds.filter(id=>data.exercises[id].category===cat)
-            .map(id=>`<option value="${id}">${data.exercises[id].name}</option>`).join("");
-          return opts ? `<optgroup label="${cat}">${opts}</optgroup>` : "";
-        }).join("");
+    const avail = Object.keys(data.exercises).filter(id=>!(data.program[day]||[]).includes(id));
+    if(avail.length){
+      const sel = document.createElement("select"); sel.className="add-to-day";
+      sel.innerHTML = '<option value="">+ добавить упражнение</option>' + CATEGORIES.map(c=>{
+        const opts = avail.filter(id=>data.exercises[id].category===c).map(id=>`<option value="${id}">${data.exercises[id].name}</option>`).join("");
+        return opts?`<optgroup label="${c}">${opts}</optgroup>`:"";
+      }).join("");
       sel.addEventListener("change", ()=>{
         if(!sel.value) return;
-        data.program[day] = data.program[day] || [];
-        data.program[day].push(sel.value);
-        saveData(); renderDayGrid();
+        data.program[day]=data.program[day]||[]; data.program[day].push(sel.value);
+        saveData(); renderProgram();
       });
       col.appendChild(sel);
     }
-
-    grid.appendChild(col);
+    daysBox.appendChild(col);
   });
 }
 
-/* ---------- Init ---------- */
+function renderAll(){ renderLibrary(); renderProgram(); }
+
 async function init(){
-  initTelegram();
+  initTg();
   data = await loadDataAsync();
-  recalcNextExId();
-  renderCatList();
-  renderDayGrid();
-  renderWeekStats();
+  recalcNextId();
+  renderAll();
 }
 init();
 </script>
